@@ -1,18 +1,19 @@
-﻿
-using Catalog.API.Products.CreateProduct;
+﻿using BuildingBlocks.CQRS;
 
 namespace Catalog.API.Products.GetProducts;
 
-// public record GetProductsRequest();
+public record GetProductsRequest(int? PageNumber = 1, int? PageSize = 10);
 public record GetProductResponse(IEnumerable<Product> Products);
 
 public class GetProductsEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/products", async (ISender sender) =>
+        app.MapGet("/products", async ([AsParameters] GetProductsRequest request, ISender sender) =>
         {
-            var result = await sender.Send(new GetProductsQuery());
+            var query = request.Adapt<GetProductsQuery>();
+
+            var result = await sender.Send(query);
 
             var response = result.Adapt<GetProductResponse>();
 
@@ -22,6 +23,6 @@ public class GetProductsEndpoint : ICarterModule
             .Produces<GetProductResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithSummary("Get Products")
-            .WithDescription("Get Products"); ;
+            .WithDescription("Get Products");
     }
 }
