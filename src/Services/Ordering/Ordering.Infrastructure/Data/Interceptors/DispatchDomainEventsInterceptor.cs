@@ -33,7 +33,7 @@ public class DispatchDomainEventsInterceptor(IMediator mediator) : SaveChangesIn
             .SelectMany(a => a.DomainEvents)
             .ToList();
 
-        aggregates.ToList().ForEach(a => a.CleadDomainEvent());
+        aggregates.ToList().ForEach(a => a.CleanDomainEvent());
 
         foreach(var domainEvent in domainEvents)
         {
