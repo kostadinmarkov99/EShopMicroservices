@@ -1,8 +1,8 @@
 using BuildingBlocks.Exceptions.Handler;
+using BuildingBlocks.Messaging.MassTransit;
 using Discount.Grpc;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Caching.Distributed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +42,8 @@ builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(
     };
     return handler;
 });
+
+builder.Services.AddMessageBroker(builder.Configuration);
 
 // Cross-Cutting Services
 builder.Services.AddStackExchangeRedisCache(options =>
